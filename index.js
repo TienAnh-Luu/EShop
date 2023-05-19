@@ -21,19 +21,15 @@ app.engine(
 app.set("view engine", "hbs");
 
 // routes
-app.get("/createTables", (req, res) => {
-  const models = require("./models");
-  models.sequelize.sync().then(() => {
-    res.send("tables created!");
-  });
+app.use("/", require("./routes/indexRouter"));
+
+app.use((req, res, next) => {
+  res.status(404).render("error", { message: "Page not found" });
 });
 
-app.get("/", (req, res) => {
-  res.render("index");
-});
-
-app.get("/:page", (req, res) => {
-  res.render(req.params.page);
+app.use((error, req, res, next) => {
+  console.error(error);
+  res.status(500).render("error", { message: "Internal Server Error" });
 });
 
 // start the server
