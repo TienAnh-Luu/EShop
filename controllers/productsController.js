@@ -36,6 +36,9 @@ controller.show = async (req, res) => {
   const sort = ["price", "newest", "popular"].includes(req.query.sort)
     ? req.query.sort
     : "price";
+  const page = isNaN(req.query.page)
+    ? 1
+    : Math.max(1, parseInt(req.query.page));
 
   const categories = await models.Category.findAll({
     include: [
@@ -100,8 +103,20 @@ controller.show = async (req, res) => {
     res.locals.originalUrl += "&";
   }
 
-  const products = await models.Product.findAll(options);
-  res.locals.products = products;
+  const limit = 6;
+  options.limit = limit;
+  options.offset = limit + (page - 1);
+  const { rows, count } = await models.Product.findAndCountAll(options);
+
+  res.locals.pagination = {
+    page,
+    limit,
+    totalRows: count,
+    queryParams: res.query,
+  };
+
+  // const products = await models.Product.findAll(options);
+  res.locals.products = rows;
   res.render("product-list");
 };
 
@@ -134,10 +149,33 @@ controller.showDetails = async (req, res) => {
           },
         ],
       },
+      {
+        model: models.Tag,
+        attributes: ["id"],
+      },
     ],
   });
 
   res.locals.product = product;
+
+  let tagIds = [];
+  product.Tags.forEach((tag) => tagIds.push(tag.id));
+
+  const relatedProducts = await models.Product.findAll({
+    attributes: ["id", "name", "imagePath", "oldPrice", "price"],
+    include: [
+      {
+        model: models.Tag,
+        attributes: ["id"],
+        where: {
+          id: { [Op.in]: tagIds },
+        },
+      },
+    ],
+    limit: 10,
+  });
+  res.locals.relatedProducts = relatedProducts;
+
   res.render("product-detail");
 };
 
