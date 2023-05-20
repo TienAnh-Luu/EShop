@@ -1,9 +1,31 @@
 "use strict";
 
 const controller = {};
+const models = require("../models");
 
-controller.showHomepage = (req, res) => {
-  res.render("index");
+controller.showHomepage = async (req, res) => {
+  const recentProducts = await models.Product.findAll({
+    attributes: ["id", "name", "imagePath", "stars", "price", "oldPrice"],
+    order: [["createdAt", "DESC"]],
+    limit: 10,
+  });
+  res.locals.recentProducts = recentProducts;
+
+  const featureProducts = await models.Product.findAll({
+    attributes: ["id", "name", "imagePath", "stars", "price", "oldPrice"],
+    order: [["stars", "DESC"]],
+    limit: 10,
+  });
+  res.locals.featureProducts = featureProducts;
+
+  const categories = await models.Category.findAll();
+  const secondArray = categories.splice(2, 2);
+  const thirdArray = categories.splice(1, 1);
+  res.locals.categoryArray = [categories, secondArray, thirdArray];
+
+  const brandTable = await models.Brand;
+  const brands = brandTable.findAll();
+  res.render("index", { brands });
 };
 
 controller.showPage = (req, res, next) => {
