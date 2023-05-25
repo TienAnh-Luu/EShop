@@ -1,4 +1,5 @@
 {
+  "use_env_variable": "POSTGRESQL_URL",
   "development": {
     "username": "ptudweshopdb",
     "password": "7oPkj1Shim1G0hMMxC8qQRv3ztivDztC",
