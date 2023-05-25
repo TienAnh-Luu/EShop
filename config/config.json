@@ -1,5 +1,4 @@
 {
-  "use_env_variable": "POSTGRESQL_URL",
   "development": {
     "username": "ptudweshopdb",
     "password": "7oPkj1Shim1G0hMMxC8qQRv3ztivDztC",
@@ -21,10 +20,7 @@
     "dialect": "postgres"
   },
   "production": {
-    "username": "ptudweshopdb",
-    "password": "7oPkj1Shim1G0hMMxC8qQRv3ztivDztC",
-    "database": "ptudweshopdb_tnsj",
-    "host": "dpg-chnh7lndvk4n43ce3ch0-a.oregon-postgres.render.com",
+    "use_env_variable": "POSTGRESQL_URL",
     "dialect": "postgres",
     "dialectOptions": {
       "ssl": {
