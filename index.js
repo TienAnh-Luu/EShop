@@ -14,6 +14,8 @@ const { createPagination } = require("express-handlebars-paginate");
 // });
 
 // redisClient.connect().catch(console.error);
+const passport = require("./controllers/passport");
+const flash = require("connect-flash");
 
 // config public static folder
 app.use(express.static(__dirname + "/public"));
@@ -37,9 +39,21 @@ app.engine(
 );
 app.set("view engine", "hbs");
 
+app.use(passport.initialize());
+// app.use(passport.session());
+
+app.use(flash());
+
+app.use((req, res, next) => {
+  res.locals.isLoggedIn = req.isAuthenticated();
+  next();
+});
+
 // routes
 app.use("/", require("./routes/indexRouter"));
 app.use("/products", require("./routes/productsRouter"));
+app.use("/users", require("./routes/authRouter"));
+// app.use("/users", require("./routes/usersRouter"));
 
 app.use((req, res, next) => {
   res.status(404).render("error", { message: "Page not found" });
