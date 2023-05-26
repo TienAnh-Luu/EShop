@@ -1,5 +1,6 @@
 {
   "development": {
+    "use_env_variable": "POSTGRESQL_URL",
     "username": "ptudweshopdb",
     "password": "7oPkj1Shim1G0hMMxC8qQRv3ztivDztC",
     "database": "ptudweshopdb_tnsj",
@@ -20,7 +21,6 @@
     "dialect": "postgres"
   },
   "production": {
-    "use_env_variable": "POSTGRESQL_URL",
     "dialect": "postgres",
     "dialectOptions": {
       "ssl": {
